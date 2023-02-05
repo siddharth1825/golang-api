@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/siddharth1825/golang-gorm-psql/initializers"
 	"github.com/siddharth1825/golang-gorm-psql/models"
+	"gorm.io/gorm"
 )
 
 func CreateUserHandler(c *fiber.Ctx) error {
@@ -57,4 +58,71 @@ func FindUsers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status":"success","results":len(users), "users":users})
+}
+
+func UpdateUsers(c *fiber.Ctx) error {
+	userId := c.Params("userId")
+
+	var payload *models.UpdateUserSchema
+
+	if err := c.BodyParser(&payload); err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail","message":err.Error()})
+	}
+
+	var user models.User
+	results := initializers.DB.First(&user,"id= ?",userId)
+	if err := results.Error; err != nil{
+		if err == gorm.ErrDryRunModeUnsupported{
+			return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"fail","message":"No suer with that id"})
+		}
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"fail","message":err.Error()})
+	}
+
+	updates := make(map[string]interface{})
+	if payload.FirstName != ""{
+		updates["FirstName"]=payload.FirstName
+	}
+
+	if payload.LastName != ""{
+		updates["LastName"]=payload.LastName
+	}
+	
+	if payload.Email != ""{
+		updates["Email"]=payload.Email
+	}
+
+	updates["updated_at"]=time.Now()
+
+	initializers.DB.Model(&user).Updates(updates)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status":"success","data":fiber.Map{"user":user}})
+}
+
+func FindUserById(c *fiber.Ctx) error{
+	userId := c.Params("userId")
+
+	var user models.User
+	results := initializers.DB.First(&user,"id= ?",userId)
+	if err := results.Error; err != nil{
+		if err == gorm.ErrRecordNotFound{
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that id exists"})
+		}
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"fail","message":err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status":"success","data":fiber.Map{"user":user}})
+}
+
+func DeleteUser(c *fiber.Ctx) error {
+	userId := c.Params("userId")
+
+	result := initializers.DB.Delete(&models.User{},"id= ?",userId)
+
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that id exists"})
+	} else if result.Error != nil{
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"error","message":result.Error})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

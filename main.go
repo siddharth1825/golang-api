@@ -44,6 +44,12 @@ func main() {
 		router.Get("",controllers.FindUsers)
 	})
 
+	micro.Route("/users/:userId", func(router fiber.Router) {
+		router.Delete("",controllers.DeleteUser)
+		router.Get("",controllers.FindUserById)
+		router.Patch("",controllers.UpdateUsers)
+	})
+
 	log.Fatal(app.Listen(":" + config.ServerPort))
 		
 }
