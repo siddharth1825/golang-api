@@ -44,6 +44,11 @@ func main() {
 		router.Get("",controllers.FindUsers)
 	})
 
+	micro.Route("/songs",func(router fiber.Router){
+		router.Post("/", controllers.CreateSongs)
+		router.Get("",controllers.FindSongs)
+	})
+
 	micro.Route("/users/:userId", func(router fiber.Router) {
 		router.Delete("",controllers.DeleteUser)
 		router.Get("",controllers.FindUserById)

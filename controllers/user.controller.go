@@ -35,7 +35,7 @@ func CreateUserHandler(c *fiber.Ctx) error {
 	result := initializers.DB.Create(&newUser)
 
 	if result.Error != nil && strings.Contains(result.Error.Error(),"duplicate key value violates unique") {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"status": "fail", "message": "Title already exist, please use another title"})
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"status": "fail", "message": "Email already exist, please use another Email"})
 	} else if result.Error != nil{
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"error","message":result.Error.Error()})
 	}
@@ -102,7 +102,7 @@ func FindUserById(c *fiber.Ctx) error{
 	userId := c.Params("userId")
 
 	var user models.User
-	results := initializers.DB.First(&user,"id= ?",userId)
+	results := initializers.DB.Preload("Songs").First(&user,"id= ?",userId)
 	if err := results.Error; err != nil{
 		if err == gorm.ErrRecordNotFound{
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that id exists"})
@@ -126,3 +126,4 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
