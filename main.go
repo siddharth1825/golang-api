@@ -1,18 +1,18 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"log"
-	"path/filepath"
+	// "path/filepath"
 
-	firebase "firebase.google.com/go"
+	// firebase "firebase.google.com/go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	gofiberfirebaseauth "github.com/sacsand/gofiber-firebaseauth"
+	// gofiberfirebaseauth "github.com/sacsand/gofiber-firebaseauth"
 	"github.com/siddharth1825/golang-gorm-psql/controllers"
 	"github.com/siddharth1825/golang-gorm-psql/initializers"
-	"google.golang.org/api/option"
+	// "google.golang.org/api/option"
 )
 
 func init() {
@@ -33,18 +33,18 @@ func main() {
 	}
 
 	//firebase
-	serviceAccountKeyFilePath, err :=
-	filepath.Abs("./serviceAccount.json")
-	if err != nil {
-		panic("unable to load service account")
-	}
+	// serviceAccountKeyFilePath, err :=
+	// filepath.Abs("./serviceAccount.json")
+	// if err != nil {
+	// 	panic("unable to load service account")
+	// }
 
-	opt := option.WithCredentialsFile(serviceAccountKeyFilePath)
+	// opt := option.WithCredentialsFile(serviceAccountKeyFilePath)
 
-	fireapp , err := firebase.NewApp(context.Background(),nil,opt)
-	if err!= nil {
-		panic("firebase load error")
-	}
+	// fireapp , err := firebase.NewApp(context.Background(),nil,opt)
+	// if err!= nil {
+	// 	panic("firebase load error")
+	// }
 
 	//initialize app
 	app := fiber.New()
@@ -60,10 +60,10 @@ func main() {
 		AllowMethods:     "GET, POST, PATCH, DELETE",
 		AllowCredentials: true,
 	}))
-	app.Use(gofiberfirebaseauth.New(gofiberfirebaseauth.Config{
-		FirebaseApp: fireapp,
-		IgnoreUrls: []string{"GET::/api/users","POST::/api/users","GET::/api/songs","POST::/api/songs"},
-	}))
+	// app.Use(gofiberfirebaseauth.New(gofiberfirebaseauth.Config{
+	// 	FirebaseApp: fireapp,
+	// 	IgnoreUrls: []string{"GET::/api/users","POST::/api/users","GET::/api/songs","POST::/api/songs"},
+	// }))
 
 	//routes
 	micro.Route("/users",func(router fiber.Router){
