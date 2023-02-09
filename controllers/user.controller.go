@@ -25,8 +25,6 @@ func CreateUserHandler(c *fiber.Ctx) error {
 
 	now := time.Now()
 	newUser := models.User{
-		FirstName: payload.FirstName,
-		LastName: payload.LastName,
 		Email: payload.Email,
 		CreatedAt: now,
 		UpdatedAt: now,
@@ -79,14 +77,6 @@ func UpdateUsers(c *fiber.Ctx) error {
 	}
 
 	updates := make(map[string]interface{})
-	if payload.FirstName != ""{
-		updates["FirstName"]=payload.FirstName
-	}
-
-	if payload.LastName != ""{
-		updates["LastName"]=payload.LastName
-	}
-	
 	if payload.Email != ""{
 		updates["Email"]=payload.Email
 	}

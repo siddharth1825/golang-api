@@ -9,8 +9,6 @@ import (
 
 type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
-	FirstName string    `gorm:"type:varchar(255);not null"`
-	LastName  string    `gorm:"type:varchar(255);not null"`
 	Email     string    `gorm:"uniqueIndex;not null;primary_key"`
 	Songs []Songs `gorm:"foreignKey:UserEmail; constraint:OnUpdate:CASCADE, OnDelete:CASCADE;"`
 	CreatedAt time.Time
@@ -41,14 +39,10 @@ func ValidateStruct[T any](payload T) []*ErrorResponse {
 }
 
 type CreateUserSchema struct {
-	FirstName string `json:"firstname" validate:"required"`
-	LastName  string `json:"lastname" validate:"required"`
 	Email     string `json:"email" validate:"required"`
 }
 
 type UpdateUserSchema struct {
-	FirstName string `json:"firstname,omitempty"`
-	LastName  string `json:"lastname,omitempty"`
 	Email     string `json:"email,omitempty"`
 }
 
