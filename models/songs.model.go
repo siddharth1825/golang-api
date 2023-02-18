@@ -8,9 +8,9 @@ import(
 )
 
 type Songs struct {
-	ID uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
+	ID uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Link string `gorm:"type:varchar(255);not null"`
-	UserEmail string `gorm:"type:varchar(255);not null;primary_key"`
+	UserEmail string `gorm:"type:varchar(255);not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

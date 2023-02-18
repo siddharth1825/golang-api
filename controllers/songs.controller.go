@@ -3,7 +3,7 @@ package controllers
 import(
 
 	"strconv"
-	"strings"
+	// "strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,9 +34,7 @@ func CreateSongs(c *fiber.Ctx) error {
 
 	result := initializers.DB.Create(&newSong)
 
-	if result.Error != nil && strings.Contains(result.Error.Error(),"duplicate key value violates unique") {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"status": "fail", "message": "UserEmail already exist, please use another UserEmail"})
-	} else if result.Error != nil{
+	if result.Error != nil{
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"error","message":result.Error.Error()})
 	}
 
