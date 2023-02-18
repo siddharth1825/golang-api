@@ -92,10 +92,10 @@ func FindUserById(c *fiber.Ctx) error{
 	userId := c.Params("userId")
 
 	var user models.User
-	results := initializers.DB.Preload("Songs").First(&user,"id= ?",userId)
+	results := initializers.DB.Preload("Songs").First(&user,"email= ?",userId)
 	if err := results.Error; err != nil{
 		if err == gorm.ErrRecordNotFound{
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that id exists"})
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that email exists"})
 		}
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"fail","message":err.Error()})
 	}
@@ -106,10 +106,10 @@ func FindUserById(c *fiber.Ctx) error{
 func DeleteUser(c *fiber.Ctx) error {
 	userId := c.Params("userId")
 
-	result := initializers.DB.Delete(&models.User{},"id= ?",userId)
+	result := initializers.DB.Delete(&models.User{},"email= ?",userId)
 
 	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that id exists"})
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status":"fail","message":"No user with that email exists"})
 	} else if result.Error != nil{
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status":"error","message":result.Error})
 	}
